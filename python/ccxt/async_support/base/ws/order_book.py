@@ -7,6 +7,8 @@ import sys
 
 class OrderBook(dict):
     def __init__(self, snapshot={}, depth=None):
+        self.parent = None
+        self.parent_key = None
         self.cache = []
         depth = depth or sys.maxsize
         defaults = {
@@ -24,6 +26,8 @@ class OrderBook(dict):
         if not isinstance(defaults['bids'], order_book_side.OrderBookSide):
             defaults['bids'] = order_book_side.Bids(defaults['bids'], depth)
         defaults['datetime'] = Exchange.iso8601(defaults.get('timestamp'))
+        defaults['asks'].parent = self
+        defaults['bids'].parent = self
         # merge to self
         super(OrderBook, self).__init__(defaults)
 

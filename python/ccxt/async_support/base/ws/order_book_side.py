@@ -11,6 +11,7 @@ import bisect
 
 class OrderBookSide(list):
     side = None  # set to True for bids and False for asks
+    parent = None
 
     def __init__(self, deltas=[], depth=None):
         super(OrderBookSide, self).__init__()

@@ -91,6 +91,15 @@ import urllib.parse as _urlencode
 
 # -----------------------------------------------------------------------------
 
+class OrderbooksDict(dict):
+    def __init__(self, exchange, *args, **kwargs):
+        self.parent = exchange
+        super().__init__(*args, **kwargs)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        value.parent = self
+        value.parent_key = key
 
 class Exchange(object):
     """Base exchange class"""
@@ -379,7 +388,7 @@ class Exchange(object):
         self.exceptions = dict() if self.exceptions is None else self.exceptions
         self.headers = dict() if self.headers is None else self.headers
         self.balance = dict() if self.balance is None else self.balance
-        self.orderbooks = dict() if self.orderbooks is None else self.orderbooks
+        self.orderbooks = OrderbooksDict(self) if self.orderbooks is None else self.orderbooks
         self.tickers = dict() if self.tickers is None else self.tickers
         self.trades = dict() if self.trades is None else self.trades
         self.transactions = dict() if self.transactions is None else self.transactions
